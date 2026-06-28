@@ -19,16 +19,14 @@ class User:
 
     
 
-    @staticmethod
-    def get_connection():
+    def get_connection(self):
         return sqlite3.connect(DB_PATH)
 
    
 
-    @staticmethod
-    def login(email, password):
+    def login(self, email, password):
 
-        connection = User.get_connection()
+        connection = self.get_connection()
         cursor = connection.cursor()
 
         cursor.execute("""
@@ -47,11 +45,11 @@ class User:
 
     def add_user(self):
 
-        connection = User.get_connection()
+        connection = self.get_connection()
         cursor = connection.cursor()
 
         cursor.execute("""
-            INSERT INTO Users(name,email,password,role)
+            INSERT INTO Users(name, email, password, role)
             VALUES(?,?,?,?)
         """, (
             self.name,
@@ -63,17 +61,17 @@ class User:
         connection.commit()
         connection.close()
 
-   
+ 
 
-    @staticmethod
-    def get_all_users():
+    def get_all_users(self):
 
-        connection = User.get_connection()
+        connection = self.get_connection()
         cursor = connection.cursor()
 
         cursor.execute("""
             SELECT *
             FROM Users
+            ORDER BY user_id
         """)
 
         users = cursor.fetchall()
@@ -82,12 +80,11 @@ class User:
 
         return users
 
-    
+ 
 
-    @staticmethod
-    def delete_user(user_id):
+    def delete_user(self, user_id):
 
-        connection = User.get_connection()
+        connection = self.get_connection()
         cursor = connection.cursor()
 
         cursor.execute("""
@@ -100,12 +97,13 @@ class User:
 
 
 
-
 if __name__ == "__main__":
+
+    user = User()
 
     print("Users in Database\n")
 
-    users = User.get_all_users()
+    users = user.get_all_users()
 
-    for user in users:
-        print(user)
+    for record in users:
+        print(record)
