@@ -8,29 +8,29 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "database", "pams.db")
 
 
-class Invoice:
+class Maintenance:
 
     def __init__(self,
-                 invoice_id=None,
+                 request_id=None,
                  tenant_id="",
-                 amount=0,
-                 issue_date="",
-                 due_date="",
-                 status=""):
+                 apartment_id="",
+                 priority="",
+                 status="",
+                 cost=0,
+                 resolution_time=0):
 
-        self.invoice_id = invoice_id
+        self.request_id = request_id
         self.tenant_id = tenant_id
-        self.amount = amount
-        self.issue_date = issue_date
-        self.due_date = due_date
+        self.apartment_id = apartment_id
+        self.priority = priority
         self.status = status
-
+        self.cost = cost
+        self.resolution_time = resolution_time
 
     def get_connection(self):
         return sqlite3.connect(DB_PATH)
 
-
-    def add_invoice(self):
+    def add_request(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -39,24 +39,26 @@ class Invoice:
 
             cursor.execute("""
 
-                INSERT INTO Invoices
+                INSERT INTO MaintenanceRequests
                 (
                     tenant_id,
-                    amount,
-                    issue_date,
-                    due_date,
-                    status
+                    apartment_id,
+                    priority,
+                    status,
+                    cost,
+                    resolution_time
                 )
 
-                VALUES(?,?,?,?,?)
+                VALUES (?,?,?,?,?,?)
 
             """, (
 
                 self.tenant_id,
-                self.amount,
-                self.issue_date,
-                self.due_date,
-                self.status
+                self.apartment_id,
+                self.priority,
+                self.status,
+                self.cost,
+                self.resolution_time
 
             ))
 
@@ -72,8 +74,7 @@ class Invoice:
 
             connection.close()
 
-
-    def update_invoice(self):
+    def update_request(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -82,26 +83,28 @@ class Invoice:
 
             cursor.execute("""
 
-                UPDATE Invoices
+                UPDATE MaintenanceRequests
 
                 SET
 
                     tenant_id=?,
-                    amount=?,
-                    issue_date=?,
-                    due_date=?,
-                    status=?
+                    apartment_id=?,
+                    priority=?,
+                    status=?,
+                    cost=?,
+                    resolution_time=?
 
-                WHERE invoice_id=?
+                WHERE request_id=?
 
             """, (
 
                 self.tenant_id,
-                self.amount,
-                self.issue_date,
-                self.due_date,
+                self.apartment_id,
+                self.priority,
                 self.status,
-                self.invoice_id
+                self.cost,
+                self.resolution_time,
+                self.request_id
 
             ))
 
@@ -117,8 +120,7 @@ class Invoice:
 
             connection.close()
 
-
-    def delete_invoice(self, invoice_id):
+    def delete_request(self, request_id):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -127,11 +129,11 @@ class Invoice:
 
             cursor.execute("""
 
-                DELETE FROM Invoices
+                DELETE FROM MaintenanceRequests
 
-                WHERE invoice_id=?
+                WHERE request_id=?
 
-            """, (invoice_id,))
+            """, (request_id,))
 
             connection.commit()
             return True
@@ -145,8 +147,7 @@ class Invoice:
 
             connection.close()
 
-
-    def search_invoice(self, keyword):
+    def search_request(self, keyword):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -155,7 +156,7 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM MaintenanceRequests
 
             WHERE
 
@@ -163,7 +164,7 @@ class Invoice:
 
                 OR
 
-                status LIKE ?
+                apartment_id LIKE ?
 
         """, (
 
@@ -172,14 +173,13 @@ class Invoice:
 
         ))
 
-        invoices = cursor.fetchall()
+        requests = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return requests
 
-
-    def get_all_invoices(self):
+    def get_all_requests(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -188,27 +188,27 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM MaintenanceRequests
 
-            ORDER BY invoice_id
+            ORDER BY request_id
 
         """)
 
-        invoices = cursor.fetchall()
+        requests = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return requests
 
 
 if __name__ == "__main__":
 
-    invoice = Invoice()
+    maintenance = Maintenance()
 
-    print("Invoice Records\n")
+    print("Maintenance Records\n")
 
-    invoices = invoice.get_all_invoices()
+    requests = maintenance.get_all_requests()
 
-    for record in invoices:
+    for record in requests:
 
         print(record)

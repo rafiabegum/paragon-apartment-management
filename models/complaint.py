@@ -8,21 +8,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "database", "pams.db")
 
 
-class Invoice:
+class Complaint:
 
     def __init__(self,
-                 invoice_id=None,
+                 complaint_id=None,
                  tenant_id="",
-                 amount=0,
-                 issue_date="",
-                 due_date="",
+                 description="",
+                 complaint_date="",
                  status=""):
 
-        self.invoice_id = invoice_id
+        self.complaint_id = complaint_id
         self.tenant_id = tenant_id
-        self.amount = amount
-        self.issue_date = issue_date
-        self.due_date = due_date
+        self.description = description
+        self.complaint_date = complaint_date
         self.status = status
 
 
@@ -30,7 +28,7 @@ class Invoice:
         return sqlite3.connect(DB_PATH)
 
 
-    def add_invoice(self):
+    def add_complaint(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -39,23 +37,21 @@ class Invoice:
 
             cursor.execute("""
 
-                INSERT INTO Invoices
+                INSERT INTO Complaints
                 (
                     tenant_id,
-                    amount,
-                    issue_date,
-                    due_date,
+                    description,
+                    complaint_date,
                     status
                 )
 
-                VALUES(?,?,?,?,?)
+                VALUES(?,?,?,?)
 
-            """, (
+            """,(
 
                 self.tenant_id,
-                self.amount,
-                self.issue_date,
-                self.due_date,
+                self.description,
+                self.complaint_date,
                 self.status
 
             ))
@@ -73,7 +69,7 @@ class Invoice:
             connection.close()
 
 
-    def update_invoice(self):
+    def update_complaint(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -82,26 +78,24 @@ class Invoice:
 
             cursor.execute("""
 
-                UPDATE Invoices
+                UPDATE Complaints
 
                 SET
 
                     tenant_id=?,
-                    amount=?,
-                    issue_date=?,
-                    due_date=?,
+                    description=?,
+                    complaint_date=?,
                     status=?
 
-                WHERE invoice_id=?
+                WHERE complaint_id=?
 
-            """, (
+            """,(
 
                 self.tenant_id,
-                self.amount,
-                self.issue_date,
-                self.due_date,
+                self.description,
+                self.complaint_date,
                 self.status,
-                self.invoice_id
+                self.complaint_id
 
             ))
 
@@ -118,7 +112,7 @@ class Invoice:
             connection.close()
 
 
-    def delete_invoice(self, invoice_id):
+    def delete_complaint(self, complaint_id):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -127,11 +121,11 @@ class Invoice:
 
             cursor.execute("""
 
-                DELETE FROM Invoices
+                DELETE FROM Complaints
 
-                WHERE invoice_id=?
+                WHERE complaint_id=?
 
-            """, (invoice_id,))
+            """,(complaint_id,))
 
             connection.commit()
             return True
@@ -146,7 +140,7 @@ class Invoice:
             connection.close()
 
 
-    def search_invoice(self, keyword):
+    def search_complaint(self, keyword):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -155,7 +149,7 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM Complaints
 
             WHERE
 
@@ -165,21 +159,21 @@ class Invoice:
 
                 status LIKE ?
 
-        """, (
+        """,(
 
             "%" + keyword + "%",
             "%" + keyword + "%"
 
         ))
 
-        invoices = cursor.fetchall()
+        complaints = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return complaints
 
 
-    def get_all_invoices(self):
+    def get_all_complaints(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -188,27 +182,27 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM Complaints
 
-            ORDER BY invoice_id
+            ORDER BY complaint_id
 
         """)
 
-        invoices = cursor.fetchall()
+        complaints = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return complaints
 
 
 if __name__ == "__main__":
 
-    invoice = Invoice()
+    complaint = Complaint()
 
-    print("Invoice Records\n")
+    print("Complaint Records\n")
 
-    invoices = invoice.get_all_invoices()
+    complaints = complaint.get_all_complaints()
 
-    for record in invoices:
+    for record in complaints:
 
         print(record)

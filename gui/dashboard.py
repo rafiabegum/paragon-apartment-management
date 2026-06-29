@@ -4,6 +4,14 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from gui.tenant import TenantGUI
+from gui.apartment import ApartmentGUI
+from gui.lease import LeaseGUI
+from gui.invoice import InvoiceGUI
+from gui.payment import PaymentGUI
+from gui.complaint import ComplaintGUI
+from gui.maintenance import MaintenanceGUI
+
 
 class Dashboard:
 
@@ -61,22 +69,24 @@ class Dashboard:
 
         buttons = [
 
-            ("Tenant Management", self.tenant),
+            ("Tenant Management", self.open_tenant),
 
-            ("Apartment Management", self.apartment),
+            ("Apartment Management", self.open_apartment),
 
-            ("Payment & Billing", self.payment),
+            ("Lease Management", self.open_lease),
 
-            ("Maintenance", self.maintenance),
+            ("Invoice Management", self.open_invoice),
 
-            ("Reports", self.reports),
+            ("Payment Management", self.open_payment),
 
-            ("User Management", self.users),
+            ("Complaint Management", self.open_complaint),
+
+            ("Maintenance Management", self.open_maintenance),
 
             ("Logout", self.logout)
 
         ]
-
+        
         row = 0
         col = 0
 
@@ -167,6 +177,28 @@ class Dashboard:
         ):
 
             self.root.destroy()
+    
+
+    def open_tenant(self):
+        TenantGUI()
+
+    def open_apartment(self):
+        ApartmentGUI()
+
+    def open_lease(self):
+        LeaseGUI()
+
+    def open_invoice(self):
+        InvoiceGUI()
+
+    def open_payment(self):
+        PaymentGUI()
+
+    def open_complaint(self):
+        ComplaintGUI()
+
+    def open_maintenance(self):
+        MaintenanceGUI()
 
 
 if __name__ == "__main__":

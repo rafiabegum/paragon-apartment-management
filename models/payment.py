@@ -8,29 +8,27 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "database", "pams.db")
 
 
-class Invoice:
+class Payment:
 
     def __init__(self,
-                 invoice_id=None,
-                 tenant_id="",
+                 payment_id=None,
+                 invoice_id="",
                  amount=0,
-                 issue_date="",
-                 due_date="",
-                 status=""):
+                 payment_date="",
+                 payment_status=""):
 
+        self.payment_id = payment_id
         self.invoice_id = invoice_id
-        self.tenant_id = tenant_id
         self.amount = amount
-        self.issue_date = issue_date
-        self.due_date = due_date
-        self.status = status
+        self.payment_date = payment_date
+        self.payment_status = payment_status
 
 
     def get_connection(self):
         return sqlite3.connect(DB_PATH)
 
 
-    def add_invoice(self):
+    def add_payment(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -39,24 +37,22 @@ class Invoice:
 
             cursor.execute("""
 
-                INSERT INTO Invoices
+                INSERT INTO Payments
                 (
-                    tenant_id,
+                    invoice_id,
                     amount,
-                    issue_date,
-                    due_date,
-                    status
+                    payment_date,
+                    payment_status
                 )
 
-                VALUES(?,?,?,?,?)
+                VALUES (?, ?, ?, ?)
 
             """, (
 
-                self.tenant_id,
+                self.invoice_id,
                 self.amount,
-                self.issue_date,
-                self.due_date,
-                self.status
+                self.payment_date,
+                self.payment_status
 
             ))
 
@@ -73,7 +69,7 @@ class Invoice:
             connection.close()
 
 
-    def update_invoice(self):
+    def update_payment(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -82,26 +78,24 @@ class Invoice:
 
             cursor.execute("""
 
-                UPDATE Invoices
+                UPDATE Payments
 
                 SET
 
-                    tenant_id=?,
+                    invoice_id=?,
                     amount=?,
-                    issue_date=?,
-                    due_date=?,
-                    status=?
+                    payment_date=?,
+                    payment_status=?
 
-                WHERE invoice_id=?
+                WHERE payment_id=?
 
             """, (
 
-                self.tenant_id,
+                self.invoice_id,
                 self.amount,
-                self.issue_date,
-                self.due_date,
-                self.status,
-                self.invoice_id
+                self.payment_date,
+                self.payment_status,
+                self.payment_id
 
             ))
 
@@ -118,7 +112,7 @@ class Invoice:
             connection.close()
 
 
-    def delete_invoice(self, invoice_id):
+    def delete_payment(self, payment_id):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -127,11 +121,11 @@ class Invoice:
 
             cursor.execute("""
 
-                DELETE FROM Invoices
+                DELETE FROM Payments
 
-                WHERE invoice_id=?
+                WHERE payment_id=?
 
-            """, (invoice_id,))
+            """, (payment_id,))
 
             connection.commit()
             return True
@@ -146,7 +140,7 @@ class Invoice:
             connection.close()
 
 
-    def search_invoice(self, keyword):
+    def search_payment(self, keyword):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -155,15 +149,15 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM Payments
 
             WHERE
 
-                tenant_id LIKE ?
+                invoice_id LIKE ?
 
                 OR
 
-                status LIKE ?
+                payment_status LIKE ?
 
         """, (
 
@@ -172,14 +166,14 @@ class Invoice:
 
         ))
 
-        invoices = cursor.fetchall()
+        payments = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return payments
 
 
-    def get_all_invoices(self):
+    def get_all_payments(self):
 
         connection = self.get_connection()
         cursor = connection.cursor()
@@ -188,27 +182,27 @@ class Invoice:
 
             SELECT *
 
-            FROM Invoices
+            FROM Payments
 
-            ORDER BY invoice_id
+            ORDER BY payment_id
 
         """)
 
-        invoices = cursor.fetchall()
+        payments = cursor.fetchall()
 
         connection.close()
 
-        return invoices
+        return payments
 
 
 if __name__ == "__main__":
 
-    invoice = Invoice()
+    payment = Payment()
 
-    print("Invoice Records\n")
+    print("Payment Records\n")
 
-    invoices = invoice.get_all_invoices()
+    payments = payment.get_all_payments()
 
-    for record in invoices:
+    for record in payments:
 
         print(record)
