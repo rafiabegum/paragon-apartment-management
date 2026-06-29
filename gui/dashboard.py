@@ -24,9 +24,7 @@ class Dashboard:
         self.root.configure(bg="#F4F6F9")
         self.root.resizable(False, False)
 
-        # ===========================
-        # Header
-        # ===========================
+
 
         header = tk.Frame(
             self.root,
@@ -67,25 +65,75 @@ class Dashboard:
 
       
 
-        buttons = [
+        if user_role == "Administrator":
 
-            ("Tenant Management", self.open_tenant),
+            buttons = [
 
-            ("Apartment Management", self.open_apartment),
+                ("Tenant Management", self.open_tenant),
+                ("Apartment Management", self.open_apartment),
+                ("Lease Management", self.open_lease),
+                ("Invoice Management", self.open_invoice),
+                ("Payment Management", self.open_payment),
+                ("Complaint Management", self.open_complaint),
+                ("Maintenance Management", self.open_maintenance),
+                ("Logout", self.logout)
 
-            ("Lease Management", self.open_lease),
+            ]
 
-            ("Invoice Management", self.open_invoice),
+        elif user_role == "Front Desk Staff":
 
-            ("Payment Management", self.open_payment),
+            buttons = [
 
-            ("Complaint Management", self.open_complaint),
+                ("Tenant Management", self.open_tenant),
+                ("Lease Management", self.open_lease),
+                ("Complaint Management", self.open_complaint),
+                ("Maintenance Management", self.open_maintenance),
+                ("Logout", self.logout)
 
-            ("Maintenance Management", self.open_maintenance),
+            ]
 
-            ("Logout", self.logout)
+        elif user_role == "Finance Manager":
 
-        ]
+            buttons = [
+
+                ("Invoice Management", self.open_invoice),
+                ("Payment Management", self.open_payment),
+                ("Logout", self.logout)
+
+            ]
+
+        elif user_role == "Maintenance Staff":
+
+            buttons = [
+
+                ("Maintenance Management", self.open_maintenance),
+                ("Complaint Management", self.open_complaint),
+                ("Logout", self.logout)
+
+            ]
+
+        elif user_role == "Manager":
+
+            buttons = [
+
+                ("Tenant Management", self.open_tenant),
+                ("Apartment Management", self.open_apartment),
+                ("Lease Management", self.open_lease),
+                ("Invoice Management", self.open_invoice),
+                ("Payment Management", self.open_payment),
+                ("Complaint Management", self.open_complaint),
+                ("Maintenance Management", self.open_maintenance),
+                ("Logout", self.logout)
+
+            ]
+
+        else:
+
+            buttons = [
+
+                ("Logout", self.logout)
+
+            ]
         
         row = 0
         col = 0

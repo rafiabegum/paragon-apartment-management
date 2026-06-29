@@ -103,6 +103,7 @@ class LoginWindow:
 
             self.root.destroy()
 
+           
             Dashboard(user[1], user[4])
 
             
